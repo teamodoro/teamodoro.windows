@@ -6,6 +6,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Windows.Media;
 using TeamodoroClient.Json;
 
 namespace TeamodoroClient
@@ -106,8 +107,10 @@ namespace TeamodoroClient
 
         public void updateState()
         {
+            _timer.Stop();
             State savedState = getState();
             _current = getCurrent("http://teamodoro.sdfgh153.ru/api/current");
+            _timer.Start();
             if (getState() != savedState && StateChanged != null) StateChanged(getState());
         }
 
@@ -161,6 +164,24 @@ namespace TeamodoroClient
         public String getRemainingTimeString()
         {
             return formatTime(getRemainingTime());
+        }
+
+        public Brush getColor()
+        {
+            if (_current != null)
+            {
+                switch (getState())
+                {
+                    case State.running: return (SolidColorBrush)new BrushConverter().ConvertFromString(_current.Options.Running.Color);
+                    case State.shortBreak: return (SolidColorBrush)new BrushConverter().ConvertFromString(_current.Options.ShortBreak.Color);
+                    case State.longBreak: return (SolidColorBrush)new BrushConverter().ConvertFromString(_current.Options.LongBreak.Color);
+                    default: return Brushes.Black;
+                }
+            }
+            else
+            {
+                return Brushes.Black;
+            }
         }
 
     }

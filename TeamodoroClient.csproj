@@ -63,6 +63,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="State.cs" />
+    <Compile Include="Windows\Controls\CircularProgressBar.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>CircularProgressBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\TimerWindow.xaml.cs">
+      <DependentUpon>TimerWindow.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Json\CurrentObject.cs" />
@@ -100,6 +107,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\1421930026_174583.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Windows\Controls\CircularProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\TimerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

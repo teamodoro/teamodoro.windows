@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Media;
 using TeamodoroClient.Json;
 
 namespace TeamodoroClient
@@ -166,22 +166,28 @@ namespace TeamodoroClient
             return formatTime(getRemainingTime());
         }
 
-        public Brush getColor()
+        public Color getColor()
         {
             if (_current != null)
             {
                 switch (getState())
                 {
-                    case State.running: return (SolidColorBrush)new BrushConverter().ConvertFromString(_current.Options.Running.Color);
-                    case State.shortBreak: return (SolidColorBrush)new BrushConverter().ConvertFromString(_current.Options.ShortBreak.Color);
-                    case State.longBreak: return (SolidColorBrush)new BrushConverter().ConvertFromString(_current.Options.LongBreak.Color);
-                    default: return Brushes.Black;
+                    case State.running: return Color.FromName(_current.Options.Running.Color);
+                    case State.shortBreak: return Color.FromName(_current.Options.ShortBreak.Color);
+                    case State.longBreak: return Color.FromName(_current.Options.LongBreak.Color);
+                    default: return Color.Black;
                 }
             }
             else
             {
-                return Brushes.Black;
+                return Color.Black;
             }
+        }
+
+        public System.Windows.Media.Color getMediaColor()
+        {
+            Color color = getColor();
+            return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
     }

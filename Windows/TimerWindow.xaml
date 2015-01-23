@@ -21,7 +21,8 @@
         </TextBlock>
 
         <Rectangle Name="SettingsButton" Cursor="Hand" MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Opacity="0.4" Margin="662,10,10,350" MouseLeftButtonDown="SettingsButtonMouseDown" Fill="{DynamicResource SettingsBrush}" />
-        <Rectangle Visibility="Hidden" Name="ModalBackground" Margin="0,0,0,42" Fill="Black" Opacity="0.7" />
+        <Rectangle Visibility="Hidden" Name="ModalBackground" Margin="0,0,0,42" Fill="Black" Opacity="0.8" />
         <Rectangle Visibility="Hidden" Name="CloseModalButton"  MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Width="40" Height="40" Cursor="Hand" Opacity="0.4" Margin="662,10,10,350" MouseLeftButtonDown="SettingsCloseButtonMouseDown" Fill="{DynamicResource CloseBrush}"/>
+        <Label Name="SoonLabel"  Content="Coming soon..." FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Silver" Visibility="Hidden" />
     </Grid>
 </Window>

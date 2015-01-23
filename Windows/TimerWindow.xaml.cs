@@ -53,6 +53,7 @@ namespace TeamodoroClient.Windows
             switch (state)
             {
                 case State.Settings:
+                    SoonLabel.Visibility = show ? Visibility.Visible : Visibility.Hidden;
                     break;
             }
 

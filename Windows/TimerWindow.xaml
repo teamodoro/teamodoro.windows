@@ -5,24 +5,45 @@
         Deactivated="WindowDeactivated" Closing="WindowClosing" Title="TimerWindow" Height="400" Width="712" WindowStyle="None" 
         ShowInTaskbar="False" ResizeMode="NoResize" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
     <Window.Resources>
+        <ImageBrush x:Key="LogoBrush" Stretch="Fill" ImageSource="/TeamodoroClient;Component/Resources/LogoImage.png" />
         <ImageBrush x:Key="SettingsBrush" Stretch="None" ImageSource="/TeamodoroClient;Component/Resources/SettingsImage.png" />
         <ImageBrush x:Key="CloseBrush" Stretch="None" ImageSource="/TeamodoroClient;Component/Resources/CloseImage.png" />
+        <ImageBrush x:Key="LoginBrush" Stretch="None" ImageSource="/TeamodoroClient;Component/Resources/LoginImage.png" />
+        <ImageBrush x:Key="LogoutBrush" Stretch="None" ImageSource="/TeamodoroClient;Component/Resources/LogoutImage.png" />
+        <ImageBrush x:Key="InfoBrush" Stretch="None" ImageSource="/TeamodoroClient;Component/Resources/InfoImage.png" />
+        <ImageBrush x:Key="BackBrush" Stretch="Uniform" ImageSource="/TeamodoroClient;Component/Resources/BackImage.png" />
+        <ImageBrush x:Key="NextBrush" Stretch="Uniform" ImageSource="/TeamodoroClient;Component/Resources/NextImage.png" />
     </Window.Resources>
     <Grid>
+        <!-- Background -->
         <Image Name="BackgroundImage" />
-        <Ellipse Width="320" Height="320" Fill="Black" Opacity="0.7" Margin="196,28,196,52" />
-        <teamodoroClient.Windows.Controls:CircularProgressBar Radius="150" HorizontalAlignment="Center" VerticalAlignment="Center" Percentage="{Binding Value, ElementName=TimerValue}" SegmentColor="Silver" StrokeThickness="6" Margin="60,12,61,35" />
-        <teamodoroClient.Windows.Controls:CircularProgressBar Radius="143" HorizontalAlignment="Center" VerticalAlignment="Center" Percentage="{Binding Value, ElementName=TimerValue}" SegmentColor="Silver" StrokeThickness="2" Margin="211,43,211,66" Height="291" />
-        <Label x:Name="StatusText" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" Margin="19,72,19,263" />
-        <Label Name="TimerText" Content="00:00" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="90" Foreground="Silver" Margin="112,112,111,145" />
+        
+        <!-- Timer Progress -->
+        <Ellipse Width="320" Height="320" Fill="Black" Opacity="0.7" />
+        <teamodoroClient.Windows.Controls:CircularProgressBar Radius="150" HorizontalAlignment="Center" VerticalAlignment="Center" Percentage="{Binding Value, ElementName=TimerValue}" SegmentColor="Silver" StrokeThickness="6" />
+        <teamodoroClient.Windows.Controls:CircularProgressBar Radius="143" HorizontalAlignment="Center" VerticalAlignment="Center" Percentage="{Binding Value, ElementName=TimerValue}" SegmentColor="Silver" StrokeThickness="2" Height="291" />
         <Slider x:Name="TimerValue" Value="100" Maximum="100" Visibility="Hidden" />
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="145,361,144,10">
-            <Hyperlink Foreground="White" Click="HyperlinkClick" NavigateUri="http://teamodoro.sdfgh153.ru">http://teamodoro.sdfgh153.ru</Hyperlink>
-        </TextBlock>
+        
+        <!-- Timer Labels -->
+        <Label x:Name="StatusText" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" Margin="0,0,0,120" />
+        <Label Name="TimerText" Content="00:00" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="90" Foreground="Silver" Margin="0,10,0,0" />
 
-        <Rectangle Name="SettingsButton" Cursor="Hand" MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Opacity="0.4" Margin="662,10,10,350" MouseLeftButtonDown="SettingsButtonMouseDown" Fill="{DynamicResource SettingsBrush}" />
-        <Rectangle Visibility="Hidden" Name="ModalBackground" Margin="0,0,0,42" Fill="Black" Opacity="0.8" />
-        <Rectangle Visibility="Hidden" Name="CloseModalButton"  MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Width="40" Height="40" Cursor="Hand" Opacity="0.4" Margin="662,10,10,350" MouseLeftButtonDown="SettingsCloseButtonMouseDown" Fill="{DynamicResource CloseBrush}"/>
-        <Label Name="SoonLabel"  Content="Coming soon..." FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Silver" Visibility="Hidden" />
+        <!-- Logo -->
+        <Rectangle Name="LogoButton" Tag="1.5" Cursor="Hand" MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Opacity="0.6" Margin="10,10,583,350" MouseLeftButtonDown="LogoButtonMouseDown" Fill="{DynamicResource LogoBrush}" />
+
+        <!-- Background Buttons -->
+        <Rectangle Name="BackButton" Tag="0.5" Cursor="Hand" MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Opacity="0.01" MouseLeftButtonDown="BackButtonMouseDown" Fill="{DynamicResource BackBrush}" HorizontalAlignment="Left" Height="300" Width="64" Margin="10,0,0,0"/>
+        <Rectangle Name="NextButton" Tag="0.5" Cursor="Hand" MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Opacity="0.01" MouseLeftButtonDown="NextButtonMouseDown" Fill="{DynamicResource NextBrush}" HorizontalAlignment="Right" Height="300" Width="64" Margin="0,0,10,0"/>
+
+        <!-- Buttons -->
+        <Rectangle Name="SettingsButton" Tag="1.5" Cursor="Hand" MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Opacity="0.6" Margin="662,10,10,350" MouseLeftButtonDown="SettingsButtonMouseDown" Fill="{DynamicResource SettingsBrush}" />
+        <Rectangle Name="LoginButton" Tag="1.5" Cursor="Hand" MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Opacity="0.6" Margin="617,10,55,350" MouseLeftButtonDown="SettingsButtonMouseDown" Fill="{DynamicResource LoginBrush}" />
+
+        <!-- Modal Block -->
+        <Rectangle Visibility="Hidden" Name="ModalBackground" Fill="Black" Opacity="0.8" />
+        <Rectangle Visibility="Hidden" Name="CloseModalButton"  MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Width="40" Height="40" Cursor="Hand" Opacity="0.4" Margin="662,10,10,350" MouseLeftButtonDown="CloseModalButtonMouseDown" Fill="{DynamicResource CloseBrush}"/>
+        
+        <!-- Settings Block -->
+        <Label Visibility="Hidden" Name="SoonLabel"  Content="Coming soon..." FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Silver" />
     </Grid>
 </Window>

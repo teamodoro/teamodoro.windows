@@ -32,6 +32,9 @@ namespace TeamodoroClient
             _synchronizer.Start();
 
             _menu = new ContextMenu();
+            _menu.MenuItems.Add("Login");
+            _menu.MenuItems.Add("Settings");
+            _menu.MenuItems.Add("-");
             _menu.MenuItems.Add("Exit", OnExit);
 
             _icon = new NotifyIcon
@@ -48,8 +51,6 @@ namespace TeamodoroClient
             Api.GetInstance().TimerTick += TimerTick;
 
             StateChanged(Api.GetInstance().GetState());
-
-            _timerWindow.BackgroundImage.Source = Api.GetInstance().GetBackgroundImage();
         }
 
         void IconClick(object sender, EventArgs e)

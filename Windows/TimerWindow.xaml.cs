@@ -2,9 +2,9 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace TeamodoroClient.Windows
 {
@@ -24,7 +24,8 @@ namespace TeamodoroClient.Windows
         public TimerWindow()
         {
             InitializeComponent();
-            _state = State.Settings;
+            BackgroundImage.Source = Api.GetInstance().GetBackgroundImage();
+            _state = State.None;
         }
 
         private void WindowClosing(object sender, CancelEventArgs e)
@@ -39,16 +40,12 @@ namespace TeamodoroClient.Windows
             if (_state == State.None) Hide();
         }
 
-        private void HyperlinkClick(object sender, RoutedEventArgs e)
-        {
-            Process.Start(((Hyperlink)sender).NavigateUri.ToString());
-        }
-
         private void ModalBlock(State state, ModalAction action)
         {
             bool show = action == ModalAction.Show;
 
             SettingsButton.Visibility = show ? Visibility.Hidden : Visibility.Visible;
+            LoginButton.Visibility = show ? Visibility.Hidden : Visibility.Visible;
 
             switch (state)
             {
@@ -73,9 +70,21 @@ namespace TeamodoroClient.Windows
             ModalBlock(state, ModalAction.Hide);
         }
 
-        private void SettingsCloseButtonMouseDown(object sender, MouseButtonEventArgs e)
+        private void CloseModalButtonMouseDown(object sender, MouseButtonEventArgs e)
         {
             HideModal(_state);
+        }
+
+        private void ButtonMouseEnterOrLeave(object sender, MouseEventArgs e)
+        {
+            double maxOpacity = 1.0;
+            if (((Rectangle) sender).Tag != null) double.TryParse(((Rectangle) sender).Tag.ToString(), out maxOpacity);
+            ((Rectangle)sender).Opacity = maxOpacity - ((Rectangle)sender).Opacity;
+        }
+
+        private void LogoButtonMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Process.Start("http://teamodoro.sdfgh153.ru");
         }
 
         private void SettingsButtonMouseDown(object sender, MouseButtonEventArgs e)
@@ -83,10 +92,14 @@ namespace TeamodoroClient.Windows
             ShowModal(State.Settings);
         }
 
-        private void ButtonMouseEnterOrLeave(object sender, MouseEventArgs e)
+        private void BackButtonMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ((Rectangle) sender).Opacity = 1 - ((Rectangle) sender).Opacity;
+            BackgroundImage.Source = Api.GetInstance().GetPreviousBackgroundImage();
         }
 
+        private void NextButtonMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            BackgroundImage.Source = Api.GetInstance().GetNextBackgroundImage();
+        }
     }
 }

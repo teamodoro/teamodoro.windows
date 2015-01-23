@@ -42,12 +42,12 @@ namespace TeamodoroClient
                         if (_current.TimesBeforeLongBreak == 0)
                         {
                             _current.TimesBeforeLongBreak = _current.Options.LongBreakEvery;
-                            _current.State.Name = State.longBreak.GetDescription();
+                            _current.State.Name = State.longBreak.ToString();
                             if (StateChanged != null) StateChanged(State.longBreak);
                         }
                         else
                         {
-                            _current.State.Name = State.shortBreak.GetDescription();
+                            _current.State.Name = State.shortBreak.ToString();
                             if (StateChanged != null) StateChanged(State.shortBreak);
                         }
                     }
@@ -57,7 +57,7 @@ namespace TeamodoroClient
                     if (_current.CurrentTime == _current.Options.ShortBreak.Duration) 
                     {
                         _current.CurrentTime = 0;
-                        _current.State.Name = State.running.GetDescription();
+                        _current.State.Name = State.running.ToString();
                         if (StateChanged != null) StateChanged(State.running);
                     }
                     break;
@@ -66,7 +66,7 @@ namespace TeamodoroClient
                     if (_current.CurrentTime == _current.Options.LongBreak.Duration)
                     {
                         _current.CurrentTime = 0;
-                        _current.State.Name = State.running.GetDescription();
+                        _current.State.Name = State.running.ToString();
                         if (StateChanged != null) StateChanged(State.running);
                     }
                     break;
@@ -83,6 +83,8 @@ namespace TeamodoroClient
         private readonly Timer _timer;
 
         private readonly CookieContainer _cookieContainer = new CookieContainer();
+
+        private int _backgroundNumber = 3;
 
         private CurrentObject GetCurrent(String url)
         {
@@ -237,7 +239,19 @@ namespace TeamodoroClient
 
         public BitmapImage GetBackgroundImage()
         {
-            return GetImageByUrl("http://teamodoro.sdfgh153.ru/img/bg3.jpg");
+            return GetImageByUrl(string.Format("http://teamodoro.sdfgh153.ru/img/bg{0}.jpg", _backgroundNumber));
+        }
+
+        public BitmapImage GetNextBackgroundImage()
+        {
+            _backgroundNumber = ++_backgroundNumber < 7 ? _backgroundNumber : 1;
+            return GetBackgroundImage();
+        }
+
+        public BitmapImage GetPreviousBackgroundImage()
+        {
+            _backgroundNumber = --_backgroundNumber > 0 ? _backgroundNumber : 6;
+            return GetBackgroundImage();
         }
 
         private CurrentObject CreateDefaultCurrentObject()
@@ -253,7 +267,7 @@ namespace TeamodoroClient
                     LongBreakEvery = 4,
                     AliveTimeout = 60
                 },
-                State = new CurrentState {Name = State.running.GetDescription()},
+                State = new CurrentState {Name = State.running.ToString()},
                 CurrentTime = 0,
                 TimesBeforeLongBreak = 4,
                 Connection = "No connection"

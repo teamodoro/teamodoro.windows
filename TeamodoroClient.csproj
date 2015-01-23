@@ -71,6 +71,7 @@
       <SubType>Code</SubType>
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\State.cs" />
     <Compile Include="Windows\TimerWindow.xaml.cs">
       <DependentUpon>TimerWindow.xaml</DependentUpon>
     </Compile>
@@ -121,6 +122,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="1421930026_174583.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SettingsImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\CloseImage.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

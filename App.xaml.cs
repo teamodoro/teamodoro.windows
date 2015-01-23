@@ -90,7 +90,7 @@ namespace TeamodoroClient
             _timerWindow.Dispatcher.BeginInvoke(new Action(delegate
             {
                 _timerWindow.TimerText.Content = Api.GetInstance().GetRemainingTimeString();
-                _timerWindow.TimerValue.Value = (double)Api.GetInstance().GetRemainingTime() / (Api.GetInstance().GetRemainingTime() + Api.GetInstance().GetCurrentTime()) * 100;
+                _timerWindow.TimerValue.Value = Api.GetInstance().GetRemainingTime() + Api.GetInstance().GetCurrentTime() == 0 ? 0 : (double)Api.GetInstance().GetRemainingTime() / (Api.GetInstance().GetRemainingTime() + Api.GetInstance().GetCurrentTime()) * 100;
             }));
         }
 

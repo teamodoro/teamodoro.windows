@@ -2,8 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:teamodoroClient.Windows.Controls="clr-namespace:TeamodoroClient.Windows.Controls"
-        Deactivated="WindowDeactivated" Title="TimerWindow" Height="400" Width="712" WindowStyle="None" 
+        Deactivated="WindowDeactivated" Closing="WindowClosing" Title="TimerWindow" Height="400" Width="712" WindowStyle="None" 
         ShowInTaskbar="False" ResizeMode="NoResize" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
+    <Window.Resources>
+        <ImageBrush x:Key="SettingsBrush" Stretch="None" ImageSource="/TeamodoroClient;Component/Resources/SettingsImage.png" />
+        <ImageBrush x:Key="CloseBrush" Stretch="None" ImageSource="/TeamodoroClient;Component/Resources/CloseImage.png" />
+    </Window.Resources>
     <Grid>
         <Image Name="BackgroundImage" />
         <Ellipse Width="320" Height="320" Fill="Black" Opacity="0.7" Margin="196,28,196,52" />
@@ -15,5 +19,9 @@
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="145,361,144,10">
             <Hyperlink Foreground="White" Click="HyperlinkClick" NavigateUri="http://teamodoro.sdfgh153.ru">http://teamodoro.sdfgh153.ru</Hyperlink>
         </TextBlock>
+
+        <Rectangle Name="SettingsButton" Cursor="Hand" MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Opacity="0.4" Margin="662,10,10,350" MouseLeftButtonDown="SettingsButtonMouseDown" Fill="{DynamicResource SettingsBrush}" />
+        <Rectangle Visibility="Hidden" Name="ModalBackground" Margin="0,0,0,42" Fill="Black" Opacity="0.7" />
+        <Rectangle Visibility="Hidden" Name="CloseModalButton"  MouseEnter="ButtonMouseEnterOrLeave" MouseLeave="ButtonMouseEnterOrLeave" Width="40" Height="40" Cursor="Hand" Opacity="0.4" Margin="662,10,10,350" MouseLeftButtonDown="SettingsCloseButtonMouseDown" Fill="{DynamicResource CloseBrush}"/>
     </Grid>
 </Window>

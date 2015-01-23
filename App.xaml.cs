@@ -38,7 +38,8 @@ namespace TeamodoroClient
             _icon = new NotifyIcon
             {
                 Icon = TeamodoroClient.Properties.Resources.DefaultIcon, 
-                ContextMenu = _menu
+                ContextMenu = _menu,
+                Text = @"Connecting..."
             };
             _icon.Click += IconClick;
             _icon.Visible = true;
@@ -73,7 +74,7 @@ namespace TeamodoroClient
         }
 
         private void StateChanged(State state) {
-            _icon.ShowBalloonTip(1000, "State: " + state, "Remaining time: " + Api.GetInstance().GetRemainingTimeString(), ToolTipIcon.Info);
+            _icon.ShowBalloonTip(1000, string.Format("State: {0}", state), string.Format("Remaining time: {0}", Api.GetInstance().GetRemainingTimeString()), ToolTipIcon.Info);
             _timerWindow.Dispatcher.BeginInvoke(new Action(delegate
             {
                 _timerWindow.StatusText.Content = Api.GetInstance().GetState().ToString();
@@ -83,7 +84,7 @@ namespace TeamodoroClient
         
         private void TimerTick()
         {
-            _icon.Text = string.Format("State: {0}\nRemaining time: {1}", Api.GetInstance().GetState(), Api.GetInstance().GetRemainingTimeString());
+            _icon.Text = string.Format("\nState: {0}\nRemaining time: {1}", Api.GetInstance().GetState(), Api.GetInstance().GetRemainingTimeString());
             _icon.Icon = GetIcon();
             _timerWindow.Dispatcher.BeginInvoke(new Action(delegate
             {

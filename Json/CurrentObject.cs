@@ -21,5 +21,7 @@ namespace TeamodoroClient.Json
         [DataMember(Name = "currentTime")]
         public long CurrentTime { get; set; }
 
+        public String Connection { get; set; }
+
     }
 }

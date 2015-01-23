@@ -5,10 +5,11 @@
         Deactivated="WindowDeactivated" Title="TimerWindow" Height="387" Width="447" WindowStyle="None" 
         ShowInTaskbar="False" ResizeMode="NoResize" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
     <Grid>
-        <teamodoroClient.Windows.Controls:CircularProgressBar Radius="150" HorizontalAlignment="Center" VerticalAlignment="Center" Percentage="{Binding Value, ElementName=TimerValue}" SegmentColor="#026873" StrokeThickness="5" Margin="68,22,69,55" />
+        <teamodoroClient.Windows.Controls:CircularProgressBar Radius="150" HorizontalAlignment="Center" VerticalAlignment="Center" Percentage="{Binding Value, ElementName=TimerValue}" SegmentColor="#026873" StrokeThickness="6" Margin="60,12,61,35" />
+        <teamodoroClient.Windows.Controls:CircularProgressBar Radius="143" HorizontalAlignment="Center" VerticalAlignment="Center" Percentage="{Binding Value, ElementName=TimerValue}" SegmentColor="#026873" StrokeThickness="2" Margin="60,12,61,35" />
         <Label x:Name="StatusText" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" Margin="19,72,19,263" />
         <Label Name="TimerText" Content="00:00" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="90" Margin="112,112,111,145" />
-        <Slider x:Name="TimerValue" Maximum="100" Visibility="Hidden" />
+        <Slider x:Name="TimerValue" Value="55" Maximum="100" Visibility="Hidden" />
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="145,361,144,10">
             <Hyperlink Foreground="White" Click="HyperlinkClick" NavigateUri="http://teamodoro.sdfgh153.ru">http://teamodoro.sdfgh153.ru</Hyperlink>
         </TextBlock>

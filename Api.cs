@@ -87,7 +87,13 @@ namespace TeamodoroClient
             try
             {
                 HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-                if (request == null) return _current ?? CreateDefaultCurrentObject();
+                if (request == null)
+                {
+                    if (_current == null) return CreateDefaultCurrentObject();
+                    _current.Connection = "No connection";
+                    return _current;
+                }
+
                 request.CookieContainer = _cookieContainer;
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
@@ -101,6 +107,7 @@ namespace TeamodoroClient
                     DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof (CurrentObject));
                     object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
                     CurrentObject jsonResponse = objResponse as CurrentObject;
+                    if (jsonResponse != null) jsonResponse.Connection = "Online: " + request.Host;
                     return jsonResponse;
                 }
             }
@@ -189,6 +196,12 @@ namespace TeamodoroClient
             return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
+        public String GetConnectionName()
+        {
+            String res = _current.Connection;
+            return res;
+        }
+
         private CurrentObject CreateDefaultCurrentObject()
         {
             return new CurrentObject
@@ -204,7 +217,8 @@ namespace TeamodoroClient
                 },
                 State = new CurrentState {Name = State.running.ToString()},
                 CurrentTime = 0,
-                TimesBeforeLongBreak = 4
+                TimesBeforeLongBreak = 4,
+                Connection = "No connection"
             };
         }
 

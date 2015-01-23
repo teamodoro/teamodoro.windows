@@ -1,13 +1,19 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace TeamodoroClient
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum State
     {
+        [Description("Running")]
         running,
+        [Description("Paused")]
         paused,
+        [Description("Short Break")]
         shortBreak,
-        longBreak
+        [Description("Long Break")]
+        longBreak,
     }
+
 }

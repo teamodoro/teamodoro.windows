@@ -25,7 +25,6 @@ namespace TeamodoroClient
 
         private readonly TimerWindow _timerWindow = new TimerWindow();
 
-
         private void StartupApplication(object sender, StartupEventArgs e)
         {
             _synchronizer = new Timer(30000);
@@ -49,11 +48,13 @@ namespace TeamodoroClient
             Api.GetInstance().TimerTick += TimerTick;
 
             StateChanged(Api.GetInstance().GetState());
+
+            _timerWindow.BackgroundImage.Source = Api.GetInstance().GetBackgroundImage();
         }
 
         void IconClick(object sender, EventArgs e)
         {
-            _timerWindow.StatusText.Content = Api.GetInstance().GetState().ToString();
+            _timerWindow.StatusText.Content = Api.GetInstance().GetState().GetDescription();
             _timerWindow.StatusText.Foreground = new SolidColorBrush(Api.GetInstance().GetMediaColor());
             _timerWindow.Left = Screen.PrimaryScreen.WorkingArea.Width - _timerWindow.Width - 2;
             _timerWindow.Top = Screen.PrimaryScreen.WorkingArea.Height - _timerWindow.Height - 2;
@@ -77,14 +78,14 @@ namespace TeamodoroClient
             _icon.ShowBalloonTip(1000, string.Format("State: {0}", state), string.Format("Remaining time: {0}", Api.GetInstance().GetRemainingTimeString()), ToolTipIcon.Info);
             _timerWindow.Dispatcher.BeginInvoke(new Action(delegate
             {
-                _timerWindow.StatusText.Content = Api.GetInstance().GetState().ToString();
+                _timerWindow.StatusText.Content = Api.GetInstance().GetState().GetDescription();
                 _timerWindow.StatusText.Foreground = new SolidColorBrush(Api.GetInstance().GetMediaColor());
             }));
         }
         
         private void TimerTick()
         {
-            _icon.Text = string.Format("\nState: {0}\nRemaining time: {1}", Api.GetInstance().GetState(), Api.GetInstance().GetRemainingTimeString());
+            _icon.Text = string.Format("State: {0}\nRemaining time: {1}", Api.GetInstance().GetState().GetDescription(), Api.GetInstance().GetRemainingTimeString());
             _icon.Icon = GetIcon();
             _timerWindow.Dispatcher.BeginInvoke(new Action(delegate
             {

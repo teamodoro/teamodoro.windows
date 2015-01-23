@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Timers;
+using System.Windows.Media.Imaging;
 using TeamodoroClient.Json;
 
 namespace TeamodoroClient
@@ -40,12 +42,12 @@ namespace TeamodoroClient
                         if (_current.TimesBeforeLongBreak == 0)
                         {
                             _current.TimesBeforeLongBreak = _current.Options.LongBreakEvery;
-                            _current.State.Name = State.longBreak.ToString();
+                            _current.State.Name = State.longBreak.GetDescription();
                             if (StateChanged != null) StateChanged(State.longBreak);
                         }
                         else
                         {
-                            _current.State.Name = State.shortBreak.ToString();
+                            _current.State.Name = State.shortBreak.GetDescription();
                             if (StateChanged != null) StateChanged(State.shortBreak);
                         }
                     }
@@ -55,7 +57,7 @@ namespace TeamodoroClient
                     if (_current.CurrentTime == _current.Options.ShortBreak.Duration) 
                     {
                         _current.CurrentTime = 0;
-                        _current.State.Name = State.running.ToString();
+                        _current.State.Name = State.running.GetDescription();
                         if (StateChanged != null) StateChanged(State.running);
                     }
                     break;
@@ -64,7 +66,7 @@ namespace TeamodoroClient
                     if (_current.CurrentTime == _current.Options.LongBreak.Duration)
                     {
                         _current.CurrentTime = 0;
-                        _current.State.Name = State.running.ToString();
+                        _current.State.Name = State.running.GetDescription();
                         if (StateChanged != null) StateChanged(State.running);
                     }
                     break;
@@ -202,6 +204,42 @@ namespace TeamodoroClient
             return res;
         }
 
+        private BitmapImage GetImageByUrl(String url)
+        {
+            try
+            {
+                var image = new BitmapImage();
+                WebRequest request = WebRequest.Create(new Uri(url, UriKind.Absolute));
+                BinaryReader reader = new BinaryReader(request.GetResponse().GetResponseStream());
+                MemoryStream memoryStream = new MemoryStream();
+
+                byte[] buffer = new byte[1024];
+                int readed = reader.Read(buffer, 0, 1024);
+
+                do
+                {
+                    memoryStream.Write(buffer, 0, readed);
+                    readed = reader.Read(buffer, 0, 1024);
+                } while (readed > 0);
+
+                image.BeginInit();
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                image.StreamSource = memoryStream;
+                image.EndInit();
+
+                return image;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public BitmapImage GetBackgroundImage()
+        {
+            return GetImageByUrl("http://teamodoro.sdfgh153.ru/img/bg3.jpg");
+        }
+
         private CurrentObject CreateDefaultCurrentObject()
         {
             return new CurrentObject
@@ -215,7 +253,7 @@ namespace TeamodoroClient
                     LongBreakEvery = 4,
                     AliveTimeout = 60
                 },
-                State = new CurrentState {Name = State.running.ToString()},
+                State = new CurrentState {Name = State.running.GetDescription()},
                 CurrentTime = 0,
                 TimesBeforeLongBreak = 4,
                 Connection = "No connection"

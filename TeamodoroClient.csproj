@@ -66,6 +66,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="State.cs" />
+    <Compile Include="Annotations.cs" />
     <Compile Include="Windows\Controls\CircularProgressBar.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>

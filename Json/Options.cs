@@ -17,5 +17,8 @@ namespace TeamodoroClient.Json
         [DataMember(Name = "longBreakEvery")]
         public long LongBreakEvery { get; set; }
 
+        [DataMember(Name = "aliveTimeout")]
+        public long AliveTimeout { get; set; }
+
     }
 }

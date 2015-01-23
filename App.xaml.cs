@@ -8,7 +8,6 @@ using System.Windows.Media;
 using TeamodoroClient.Windows;
 using Brush = System.Drawing.Brush;
 using Color = System.Drawing.Color;
-using Pen = System.Drawing.Pen;
 using Timer = System.Timers.Timer;
 
 namespace TeamodoroClient
@@ -36,9 +35,11 @@ namespace TeamodoroClient
             _menu = new ContextMenu();
             _menu.MenuItems.Add("Exit", OnExit);
 
-            _icon = new NotifyIcon();
-            _icon.Icon = TeamodoroClient.Properties.Resources.DefaultIcon;
-            _icon.ContextMenu = _menu;
+            _icon = new NotifyIcon
+            {
+                Icon = TeamodoroClient.Properties.Resources.DefaultIcon, 
+                ContextMenu = _menu
+            };
             _icon.Click += IconClick;
             _icon.Visible = true;
             

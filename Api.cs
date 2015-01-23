@@ -80,12 +80,15 @@ namespace TeamodoroClient
 
         private readonly Timer _timer;
 
+        private readonly CookieContainer _cookieContainer = new CookieContainer();
+
         private CurrentObject GetCurrent(String url)
         {
             try
             {
                 HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-                if (request == null) return null;
+                if (request == null) return _current ?? CreateDefaultCurrentObject();
+                request.CookieContainer = _cookieContainer;
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     if (response == null || response.StatusCode != HttpStatusCode.OK)
@@ -93,6 +96,8 @@ namespace TeamodoroClient
                             response == null ? (object) -1 : response.StatusCode,
                             response == null ? "Response is null" : response.StatusDescription));
 
+                    CookieCollection cookies = response.Cookies;
+                    _cookieContainer.Add(cookies);
                     DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof (CurrentObject));
                     object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
                     CurrentObject jsonResponse = objResponse as CurrentObject;
@@ -101,8 +106,7 @@ namespace TeamodoroClient
             }
             catch
             {
-                // TODO: Error!!!
-                return null;
+                return _current ?? CreateDefaultCurrentObject();
             }
         }
 
@@ -183,6 +187,25 @@ namespace TeamodoroClient
         {
             Color color = GetColor();
             return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+        }
+
+        private CurrentObject CreateDefaultCurrentObject()
+        {
+            return new CurrentObject
+            {
+                Name = "offline",
+                Options = new Options
+                {
+                    Running = new StateOption {Color = "white", Duration = 1500},
+                    ShortBreak = new StateOption {Color = "green", Duration = 300},
+                    LongBreak = new StateOption {Color = "yellow", Duration = 900},
+                    LongBreakEvery = 4,
+                    AliveTimeout = 60
+                },
+                State = new CurrentState {Name = State.running.ToString()},
+                CurrentTime = 0,
+                TimesBeforeLongBreak = 4
+            };
         }
 
     }

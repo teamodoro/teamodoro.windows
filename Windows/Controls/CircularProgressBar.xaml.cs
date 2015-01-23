@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace TeamodoroClient.Windows.Controls
@@ -8,7 +7,7 @@ namespace TeamodoroClient.Windows.Controls
     /// <summary>
     /// Interaction logic for CircularProgressBar.xaml
     /// </summary>
-    public partial class CircularProgressBar : UserControl
+    public partial class CircularProgressBar
     {
         public CircularProgressBar()
         {
@@ -49,7 +48,7 @@ namespace TeamodoroClient.Windows.Controls
 
         // Using a DependencyProperty as the backing store for Percentage.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PercentageProperty =
-            DependencyProperty.Register("Percentage", typeof(double), typeof(CircularProgressBar), new PropertyMetadata(65d, new PropertyChangedCallback(OnPercentageChanged)));
+            DependencyProperty.Register("Percentage", typeof(double), typeof(CircularProgressBar), new PropertyMetadata(65d, OnPercentageChanged));
 
         // Using a DependencyProperty as the backing store for StrokeThickness.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StrokeThicknessProperty =
@@ -61,22 +60,22 @@ namespace TeamodoroClient.Windows.Controls
 
         // Using a DependencyProperty as the backing store for Radius.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RadiusProperty =
-            DependencyProperty.Register("Radius", typeof(int), typeof(CircularProgressBar), new PropertyMetadata(25, new PropertyChangedCallback(OnPropertyChanged)));
+            DependencyProperty.Register("Radius", typeof(int), typeof(CircularProgressBar), new PropertyMetadata(25, OnPropertyChanged));
 
         // Using a DependencyProperty as the backing store for Angle.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AngleProperty =
-            DependencyProperty.Register("Angle", typeof(double), typeof(CircularProgressBar), new PropertyMetadata(120d, new PropertyChangedCallback(OnPropertyChanged)));
+            DependencyProperty.Register("Angle", typeof(double), typeof(CircularProgressBar), new PropertyMetadata(120d, OnPropertyChanged));
 
         private static void OnPercentageChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
             CircularProgressBar circle = sender as CircularProgressBar;
-            circle.Angle = (circle.Percentage * 360) / 100;
+            if (circle != null) circle.Angle = (circle.Percentage * 360) / 100;
         }
 
         private static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
             CircularProgressBar circle = sender as CircularProgressBar;
-            circle.RenderArc();
+            if (circle != null) circle.RenderArc();
         }
 
         public void RenderArc()
@@ -86,22 +85,22 @@ namespace TeamodoroClient.Windows.Controls
             endPoint.X += Radius;
             endPoint.Y += Radius;
 
-            pathRoot.Width = Radius * 2 + StrokeThickness;
-            pathRoot.Height = Radius * 2 + StrokeThickness;
-            pathRoot.Margin = new Thickness(StrokeThickness, StrokeThickness, 0, 0);
+            PathRoot.Width = Radius * 2 + StrokeThickness;
+            PathRoot.Height = Radius * 2 + StrokeThickness;
+            PathRoot.Margin = new Thickness(StrokeThickness, StrokeThickness, 0, 0);
 
             bool largeArc = Angle > 180.0;
 
             Size outerArcSize = new Size(Radius, Radius);
 
-            pathFigure.StartPoint = startPoint;
+            PathFigure.StartPoint = startPoint;
 
-            if (startPoint.X == Math.Round(endPoint.X) && startPoint.Y == Math.Round(endPoint.Y))
+            if (Math.Abs(startPoint.X - Math.Round(endPoint.X)) < 0.01 && Math.Abs(startPoint.Y - Math.Round(endPoint.Y)) < 0.01)
                 endPoint.X -= 0.01;
 
-            arcSegment.Point = endPoint;
-            arcSegment.Size = outerArcSize;
-            arcSegment.IsLargeArc = largeArc;
+            ArcSegment.Point = endPoint;
+            ArcSegment.Size = outerArcSize;
+            ArcSegment.IsLargeArc = largeArc;
         }
 
         private Point ComputeCartesianCoordinate(double angle, double radius)

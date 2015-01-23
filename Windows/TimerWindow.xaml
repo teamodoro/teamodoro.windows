@@ -1,14 +1,14 @@
 ﻿<Window x:Class="TeamodoroClient.Windows.TimerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:TeamodoroClient.Windows.Controls="clr-namespace:TeamodoroClient.Windows.Controls"
+        xmlns:teamodoroClient.Windows.Controls="clr-namespace:TeamodoroClient.Windows.Controls"
         Deactivated="WindowDeactivated" Title="TimerWindow" Height="387" Width="447" WindowStyle="None" 
         ShowInTaskbar="False" ResizeMode="NoResize" Background="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}">
     <Grid>
-        <TeamodoroClient.Windows.Controls:CircularProgressBar Radius="150" HorizontalAlignment="Center" VerticalAlignment="Center" Percentage="{Binding Value, ElementName=timerValue}" SegmentColor="#026873" StrokeThickness="5" Margin="68,22,69,55" />
-        <Label x:Name="statusText" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" Margin="19,72,19,263" />
-        <Label Name="timerText" Content="00:00" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="90" Margin="112,112,111,145" />
-        <Slider x:Name="timerValue" Maximum="100" Visibility="Hidden" />
+        <teamodoroClient.Windows.Controls:CircularProgressBar Radius="150" HorizontalAlignment="Center" VerticalAlignment="Center" Percentage="{Binding Value, ElementName=TimerValue}" SegmentColor="#026873" StrokeThickness="5" Margin="68,22,69,55" />
+        <Label x:Name="StatusText" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="32" Margin="19,72,19,263" />
+        <Label Name="TimerText" Content="00:00" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="90" Margin="112,112,111,145" />
+        <Slider x:Name="TimerValue" Maximum="100" Visibility="Hidden" />
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="145,361,144,10">
             <Hyperlink Foreground="White" Click="HyperlinkClick" NavigateUri="http://teamodoro.sdfgh153.ru">http://teamodoro.sdfgh153.ru</Hyperlink>
         </TextBlock>

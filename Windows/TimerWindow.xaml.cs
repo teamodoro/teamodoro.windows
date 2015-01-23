@@ -8,7 +8,7 @@ namespace TeamodoroClient.Windows
     /// <summary>
     /// Interaction logic for TimerWindow.xaml
     /// </summary>
-    public partial class TimerWindow : Window
+    public partial class TimerWindow
     {
         public TimerWindow()
         {

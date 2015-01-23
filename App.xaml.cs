@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
 using TeamodoroClient.Windows;
-using Application = System.Windows.Application;
 using Brush = System.Drawing.Brush;
 using Color = System.Drawing.Color;
 using Pen = System.Drawing.Pen;
@@ -17,7 +16,7 @@ namespace TeamodoroClient
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         private NotifyIcon _icon;
 
@@ -25,10 +24,10 @@ namespace TeamodoroClient
 
         private Timer _synchronizer;
 
-        private TimerWindow timerWindow = new TimerWindow();
+        private readonly TimerWindow _timerWindow = new TimerWindow();
 
 
-        private void startup(object sender, StartupEventArgs e)
+        private void StartupApplication(object sender, StartupEventArgs e)
         {
             _synchronizer = new Timer(30000);
             _synchronizer.Elapsed += SynchronizerElapsed;
@@ -43,52 +42,52 @@ namespace TeamodoroClient
             _icon.Click += IconClick;
             _icon.Visible = true;
             
-            Api.getInstance().updateState();
-            Api.getInstance().StateChanged += StateChanged;
-            Api.getInstance().TimerTick += TimerTick;
+            Api.GetInstance().UpdateState();
+            Api.GetInstance().StateChanged += StateChanged;
+            Api.GetInstance().TimerTick += TimerTick;
 
-            StateChanged(Api.getInstance().getState());
+            StateChanged(Api.GetInstance().GetState());
         }
 
         void IconClick(object sender, EventArgs e)
         {
-            timerWindow.statusText.Content = Api.getInstance().getState().ToString();
-            timerWindow.statusText.Foreground = new SolidColorBrush(Api.getInstance().getMediaColor());
-            timerWindow.Left = Screen.PrimaryScreen.WorkingArea.Width - timerWindow.Width - 2;
-            timerWindow.Top = Screen.PrimaryScreen.WorkingArea.Height - timerWindow.Height - 2;
-            timerWindow.Show();
-            timerWindow.Activate();
+            _timerWindow.StatusText.Content = Api.GetInstance().GetState().ToString();
+            _timerWindow.StatusText.Foreground = new SolidColorBrush(Api.GetInstance().GetMediaColor());
+            _timerWindow.Left = Screen.PrimaryScreen.WorkingArea.Width - _timerWindow.Width - 2;
+            _timerWindow.Top = Screen.PrimaryScreen.WorkingArea.Height - _timerWindow.Height - 2;
+            _timerWindow.Show();
+            _timerWindow.Activate();
         }
 
         void SynchronizerElapsed(object sender, ElapsedEventArgs e)
         {
-            Api.getInstance().updateState();
+            Api.GetInstance().UpdateState();
         }
 
         private void OnExit(object sender, EventArgs e)
         {
-            if (timerWindow != null) timerWindow.Close();
+            if (_timerWindow != null) _timerWindow.Close();
             _icon.Visible = false;
             Shutdown(0);
         }
 
         private void StateChanged(State state) {
-            _icon.ShowBalloonTip(1000, "State: " + state.ToString(), "Remaining time: " + Api.getInstance().getRemainingTimeString(), ToolTipIcon.Info);
-            timerWindow.Dispatcher.BeginInvoke(new Action(delegate()
+            _icon.ShowBalloonTip(1000, "State: " + state, "Remaining time: " + Api.GetInstance().GetRemainingTimeString(), ToolTipIcon.Info);
+            _timerWindow.Dispatcher.BeginInvoke(new Action(delegate
             {
-                timerWindow.statusText.Content = Api.getInstance().getState().ToString();
-                timerWindow.statusText.Foreground = new SolidColorBrush(Api.getInstance().getMediaColor());
+                _timerWindow.StatusText.Content = Api.GetInstance().GetState().ToString();
+                _timerWindow.StatusText.Foreground = new SolidColorBrush(Api.GetInstance().GetMediaColor());
             }));
         }
         
         private void TimerTick()
         {
-            _icon.Text = "State: " + Api.getInstance().getState().ToString() + "\nRemaining time: " + Api.getInstance().getRemainingTimeString();
+            _icon.Text = string.Format("State: {0}\nRemaining time: {1}", Api.GetInstance().GetState(), Api.GetInstance().GetRemainingTimeString());
             _icon.Icon = GetIcon();
-            timerWindow.Dispatcher.BeginInvoke(new Action(delegate()
+            _timerWindow.Dispatcher.BeginInvoke(new Action(delegate
             {
-                timerWindow.timerText.Content = Api.getInstance().getRemainingTimeString();
-                timerWindow.timerValue.Value = (double)Api.getInstance().getRemainingTime() / (Api.getInstance().getRemainingTime() + Api.getInstance().getCurrentTime()) * 100;
+                _timerWindow.TimerText.Content = Api.GetInstance().GetRemainingTimeString();
+                _timerWindow.TimerValue.Value = (double)Api.GetInstance().GetRemainingTime() / (Api.GetInstance().GetRemainingTime() + Api.GetInstance().GetCurrentTime()) * 100;
             }));
         }
 
@@ -97,14 +96,12 @@ namespace TeamodoroClient
             Bitmap bitmap = new Bitmap(16, 16);
             Graphics graphics = Graphics.FromImage(bitmap);
 
-            Pen linePen = new Pen(new SolidBrush(Color.White), 2);
             Brush backBrush = new SolidBrush(Color.Black);
-            Brush centerBrush = new SolidBrush(Api.getInstance().getColor());
+            Brush frontBrush = new SolidBrush(Api.GetInstance().GetColor());
 
             graphics.SmoothingMode = SmoothingMode.HighQuality;
             graphics.FillEllipse(backBrush, 0, 0, 15, 15);
-            graphics.FillEllipse(centerBrush, 4, 4, 7, 7);
-            graphics.DrawArc(linePen, 2, 2, 11, 11, -90, 360 * (float)Api.getInstance().getRemainingTime() / (Api.getInstance().getRemainingTime() + Api.getInstance().getCurrentTime()));
+            graphics.FillPie(frontBrush, 1, 1, 13, 13, -90, 360 * (float)Api.GetInstance().GetRemainingTime() / (Api.GetInstance().GetRemainingTime() + Api.GetInstance().GetCurrentTime()));
 
             Icon createdIcon = Icon.FromHandle(bitmap.GetHicon());
 

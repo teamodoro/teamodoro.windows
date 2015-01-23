@@ -17,7 +17,7 @@ namespace TeamodoroClient
 
         public StateChangedEvent StateChanged;
 
-        private static Api _instance = new Api();
+        private static readonly Api Instance = new Api();
 
         private Api() {
             _timer = new Timer(1000);
@@ -27,8 +27,10 @@ namespace TeamodoroClient
 
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
+            if (_current == null) return;
+
             _current.CurrentTime++;
-            switch (getState())
+            switch (GetState())
             {
                 case State.running:
                     if (_current.CurrentTime == _current.Options.Running.Duration)
@@ -70,25 +72,28 @@ namespace TeamodoroClient
             if (TimerTick != null) TimerTick();
         }
 
-        public static Api getInstance() {
-            return _instance;
+        public static Api GetInstance() {
+            return Instance;
         }
 
         private CurrentObject _current;
 
-        private Timer _timer;
+        private readonly Timer _timer;
 
-        private CurrentObject getCurrent(String url)
+        private CurrentObject GetCurrent(String url)
         {
             try
             {
                 HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+                if (request == null) return null;
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
-                    if (response.StatusCode != HttpStatusCode.OK)
-                        throw new Exception(String.Format("Server error (HTTP {0}: {1}).", response.StatusCode, response.StatusDescription));
+                    if (response == null || response.StatusCode != HttpStatusCode.OK)
+                        throw new Exception(String.Format("Server error (HTTP {0}: {1}).",
+                            response == null ? (object) -1 : response.StatusCode,
+                            response == null ? "Response is null" : response.StatusDescription));
 
-                    DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(CurrentObject));
+                    DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof (CurrentObject));
                     object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
                     CurrentObject jsonResponse = objResponse as CurrentObject;
                     return jsonResponse;
@@ -101,16 +106,16 @@ namespace TeamodoroClient
             }
         }
 
-        public void updateState()
+        public void UpdateState()
         {
             _timer.Stop();
-            State savedState = getState();
-            _current = getCurrent("http://teamodoro.sdfgh153.ru/api/current");
+            State savedState = GetState();
+            _current = GetCurrent("http://teamodoro.sdfgh153.ru/api/current");
             _timer.Start();
-            if (getState() != savedState && StateChanged != null) StateChanged(getState());
+            if (GetState() != savedState && StateChanged != null) StateChanged(GetState());
         }
 
-        public State getState()
+        public State GetState()
         {
             try
             {
@@ -122,16 +127,16 @@ namespace TeamodoroClient
             }
         }
 
-        public long getCurrentTime()
+        public long GetCurrentTime()
         {
             return _current != null ? _current.CurrentTime : 0;
         }
 
-        public long getRemainingTime()
+        public long GetRemainingTime()
         {
             if (_current != null)
             {
-                switch (getState())
+                switch (GetState())
                 {
                     case State.running: return _current.Options.Running.Duration - _current.CurrentTime;
                     case State.shortBreak: return _current.Options.ShortBreak.Duration - _current.CurrentTime;
@@ -139,34 +144,31 @@ namespace TeamodoroClient
                     default: return 0;
                 }
             }
-            else
-            {
-                return 0;
-            }
+            return 0;
         }
 
-        private String formatTime(long t)
+        private String FormatTime(long t)
         {
             long m = t / 60;
             long s = t % 60;
-            return m.ToString() + ":" + (s < 10 ? "0" : "") + s.ToString();
+            return m + ":" + (s < 10 ? "0" : "") + s;
         }
 
-        public String getCurrentTimeString()
+        public String GetCurrentTimeString()
         {
-            return formatTime(getCurrentTime());
+            return FormatTime(GetCurrentTime());
         }
 
-        public String getRemainingTimeString()
+        public String GetRemainingTimeString()
         {
-            return formatTime(getRemainingTime());
+            return FormatTime(GetRemainingTime());
         }
 
-        public Color getColor()
+        public Color GetColor()
         {
             if (_current != null)
             {
-                switch (getState())
+                switch (GetState())
                 {
                     case State.running: return Color.FromName(_current.Options.Running.Color);
                     case State.shortBreak: return Color.FromName(_current.Options.ShortBreak.Color);
@@ -174,15 +176,12 @@ namespace TeamodoroClient
                     default: return Color.Black;
                 }
             }
-            else
-            {
-                return Color.Black;
-            }
+            return Color.Black;
         }
 
-        public System.Windows.Media.Color getMediaColor()
+        public System.Windows.Media.Color GetMediaColor()
         {
-            Color color = getColor();
+            Color color = GetColor();
             return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 

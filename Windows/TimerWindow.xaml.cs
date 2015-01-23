@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using TeamodoroClient.Windows.Controls;
 
 namespace TeamodoroClient.Windows
 {
@@ -31,7 +22,7 @@ namespace TeamodoroClient.Windows
 
         private void HyperlinkClick(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start(((Hyperlink)sender).NavigateUri.ToString());
+            Process.Start(((Hyperlink)sender).NavigateUri.ToString());
         }
     }
 }

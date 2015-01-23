@@ -1,36 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Drawing.Drawing2D;
+using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
-using System.Timers;
-using TeamodoroClient.Json;
+using System.Windows.Media;
 using TeamodoroClient.Windows;
-using TeamodoroClient.Windows.Controls;
+using Application = System.Windows.Application;
+using Brush = System.Drawing.Brush;
+using Color = System.Drawing.Color;
+using Pen = System.Drawing.Pen;
+using Timer = System.Timers.Timer;
 
 namespace TeamodoroClient
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : System.Windows.Application
+    public partial class App : Application
     {
         private NotifyIcon _icon;
 
         private ContextMenu _menu;
 
-        private System.Timers.Timer _synchronizer;
+        private Timer _synchronizer;
 
         private TimerWindow timerWindow = new TimerWindow();
 
 
         private void startup(object sender, StartupEventArgs e)
         {
-            _synchronizer = new System.Timers.Timer(30000);
+            _synchronizer = new Timer(30000);
             _synchronizer.Elapsed += SynchronizerElapsed;
             _synchronizer.Start();
 
@@ -53,7 +53,7 @@ namespace TeamodoroClient
         void IconClick(object sender, EventArgs e)
         {
             timerWindow.statusText.Content = Api.getInstance().getState().ToString();
-            timerWindow.statusText.Foreground = new System.Windows.Media.SolidColorBrush(Api.getInstance().getMediaColor());
+            timerWindow.statusText.Foreground = new SolidColorBrush(Api.getInstance().getMediaColor());
             timerWindow.Left = Screen.PrimaryScreen.WorkingArea.Width - timerWindow.Width - 2;
             timerWindow.Top = Screen.PrimaryScreen.WorkingArea.Height - timerWindow.Height - 2;
             timerWindow.Show();
@@ -77,7 +77,7 @@ namespace TeamodoroClient
             timerWindow.Dispatcher.BeginInvoke(new Action(delegate()
             {
                 timerWindow.statusText.Content = Api.getInstance().getState().ToString();
-                timerWindow.statusText.Foreground = new System.Windows.Media.SolidColorBrush(Api.getInstance().getMediaColor());
+                timerWindow.statusText.Foreground = new SolidColorBrush(Api.getInstance().getMediaColor());
             }));
         }
         
@@ -97,12 +97,14 @@ namespace TeamodoroClient
             Bitmap bitmap = new Bitmap(16, 16);
             Graphics graphics = Graphics.FromImage(bitmap);
 
-            Pen linePen = new System.Drawing.Pen(new SolidBrush(System.Drawing.Color.White), 2);
-            Pen centerPen = new System.Drawing.Pen(Api.getInstance().getColor(), 4);
+            Pen linePen = new Pen(new SolidBrush(Color.White), 2);
+            Brush backBrush = new SolidBrush(Color.Black);
+            Brush centerBrush = new SolidBrush(Api.getInstance().getColor());
 
-            graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            graphics.DrawEllipse(centerPen, 6, 6, 4, 4);
-            graphics.DrawArc(linePen, 1, 1, 14, 14, -90, 360 * (float)Api.getInstance().getRemainingTime() / (Api.getInstance().getRemainingTime() + Api.getInstance().getCurrentTime()));
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.FillEllipse(backBrush, 0, 0, 15, 15);
+            graphics.FillEllipse(centerBrush, 4, 4, 7, 7);
+            graphics.DrawArc(linePen, 2, 2, 11, 11, -90, 360 * (float)Api.getInstance().getRemainingTime() / (Api.getInstance().getRemainingTime() + Api.getInstance().getCurrentTime()));
 
             Icon createdIcon = Icon.FromHandle(bitmap.GetHicon());
 

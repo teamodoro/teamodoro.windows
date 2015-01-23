@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Net;
 using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using TeamodoroClient.Json;
 

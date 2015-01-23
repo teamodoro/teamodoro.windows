@@ -86,34 +86,42 @@ namespace TeamodoroClient
 
         private int _backgroundNumber = 3;
 
-        private CurrentObject GetCurrent(String url)
+        private readonly String _apiUrl = "http://teamodoro.sdfgh153.ru";
+
+        private T GetJsonObject<T>(String url) where T : class
         {
             try
             {
                 HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-                if (request == null)
-                {
-                    if (_current == null) return CreateDefaultCurrentObject();
-                    _current.Connection = "No connection";
-                    return _current;
-                }
+                if (request == null) return null;
 
                 request.CookieContainer = _cookieContainer;
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     if (response == null || response.StatusCode != HttpStatusCode.OK)
                         throw new Exception(String.Format("Server error (HTTP {0}: {1}).",
-                            response == null ? (object) -1 : response.StatusCode,
+                            response == null ? (object)-1 : response.StatusCode,
                             response == null ? "Response is null" : response.StatusDescription));
 
                     CookieCollection cookies = response.Cookies;
                     _cookieContainer.Add(cookies);
-                    DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof (CurrentObject));
-                    object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
-                    CurrentObject jsonResponse = objResponse as CurrentObject;
-                    if (jsonResponse != null) jsonResponse.Connection = "Online: " + request.Host;
-                    return jsonResponse;
+                    DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof (T));
+                    return jsonSerializer.ReadObject(response.GetResponseStream()) as T;
                 }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private CurrentObject GetCurrent(String url)
+        {
+            try
+            {
+                CurrentObject jsonResponse = GetJsonObject<CurrentObject>(url);
+                if (jsonResponse != null) jsonResponse.Connection = "Online: " + url;
+                return jsonResponse ?? _current ?? CreateDefaultCurrentObject(); ;
             }
             catch
             {
@@ -121,11 +129,16 @@ namespace TeamodoroClient
             }
         }
 
+        public Participant[] GetParticipants()
+        {
+            return GetJsonObject<Participant[]>(string.Format("{0}/api/current/participants", _apiUrl));
+        }
+
         public void UpdateState()
         {
             _timer.Stop();
             State savedState = GetState();
-            _current = GetCurrent("http://teamodoro.sdfgh153.ru/api/current");
+            _current = GetCurrent(string.Format("{0}/api/current", _apiUrl));
             _timer.Start();
             if (GetState() != savedState && StateChanged != null) StateChanged(GetState());
         }
